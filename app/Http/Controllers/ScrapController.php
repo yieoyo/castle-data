@@ -171,7 +171,7 @@ class ScrapController extends Controller
                 }
             }
             fclose($handle);
-            dd('ok');
+            return true;
         } else {
             return false;
         }
