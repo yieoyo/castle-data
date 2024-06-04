@@ -48,6 +48,7 @@ class ScrapController extends Controller
             $filePath = public_path('uploads') . '/' . $fileName;
             $fileContent = '';
             if ($handle = fopen($filePath, 'r')) {
+                $pattern = '/\[(\d{2}\/\d{4})\]\s+(\d+)\s+-\s+(.*)/';
                 while (($line = fgets($handle)) !== false) {
                     $cuid = substr($line, 0, 11);
                     $url1 = $urla.$cuid;
@@ -85,7 +86,6 @@ class ScrapController extends Controller
                     if ($html2 !== false) {
                         @$dom2->loadHtml($html2);
                         $uls = $dom2->getElementsByTagName('ul');
-                        $pattern = '/\[(\d{2}\/\d{4})\]\s+(\d+)\s+-\s+(.*)/';
                         foreach($uls as $ul){
                             if($ul->getAttribute('class') == 'p_info'){
                                 $li = $ul->lastChild->previousSibling->previousSibling->previousSibling->textContent;
@@ -109,7 +109,6 @@ class ScrapController extends Controller
                                 break;
                             }
                         }
-                        sleep(1);
                     }
                     // company
                     $company = Company::where('cuit', $cuid)->first();
@@ -121,6 +120,13 @@ class ScrapController extends Controller
                             'provincia' => $provincia,
                             'localidad' => $localidad,
                         ]);
+                        echo "Company Update:"."</br>";
+                        echo "CUID: ".$cuid."</br>";
+                        echo "Razon Social: ".$razonsocial."</br>";
+                        echo "Direccion: ".$direccion."</br>";
+                        echo "Provincia: ".$provincia."</br>";
+                        echo "Localidad: ".$localidad."</br>";
+                        
                     }else {
                         $company = Company::create([
                             'cuit' => $cuid,
@@ -129,6 +135,12 @@ class ScrapController extends Controller
                             'provincia' => $provincia,
                             'localidad' => $localidad,
                         ]);
+                        echo "Company Created:"."</br>";
+                        echo "CUID: ".$cuid."</br>";
+                        echo "Razon Social: ".$razonsocial."</br>";
+                        echo "Direccion: ".$direccion."</br>";
+                        echo "Provincia: ".$provincia."</br>";
+                        echo "Localidad: ".$localidad."</br>";
                     }
 
                     // fiscal
@@ -138,11 +150,17 @@ class ScrapController extends Controller
                             'fiscal_id' => $fiscal_id,
                             'description' => $description,
                         ]);
+                        echo "Fiscal Update:"."</br>";
+                        echo "ID_Actividad: ".$fiscal_id."</br>";
+                        echo "Description: ".$description."</br>";
                     }else {
                         $fiscal = Fiscal::create([
                             'fiscal_id' => $fiscal_id,
                             'description' => $description,
                         ]);
+                        echo "Fiscal Created:"."</br>";
+                        echo "ID_Actividad: ".$fiscal_id."</br>";
+                        echo "Description: ".$description."</br>";
                     }
 
                     // activity
@@ -155,6 +173,11 @@ class ScrapController extends Controller
                                 'prioridad' => $priority,
                                 'date' => $date,
                             ]);
+                            echo "Company Activity Update:"."</br>";
+                            echo "Company ID: ".$company->id."</br>";
+                            echo "ID_Actividad: ".$fiscal_id."</br>";
+                            echo "Prioridad: ".$priority."</br>";
+                            echo "Date: ".$date."</br>";
                         }else {
                             Activity::create([
                                 'company_id' => $company->id,
@@ -162,10 +185,18 @@ class ScrapController extends Controller
                                 'prioridad' => $priority,
                                 'date' => $date,
                             ]);
+                            echo "Company Activity Created:"."</br>";
+                            echo "Company ID: ".$company->id."</br>";
+                            echo "ID_Actividad: ".$fiscal_id."</br>";
+                            echo "Prioridad: ".$priority."</br>";
+                            echo "Date: ".$date."</br>";
                         }
 
+                        echo "------------------------</br>";
 
                     }
+
+                    usleep( 1 * 1000 );
                 }
                 fclose($handle);
                 dd('ok');
