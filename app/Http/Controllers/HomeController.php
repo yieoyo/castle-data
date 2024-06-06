@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Activity;
+use Illuminate\Notifications\Action;
 
 class HomeController extends Controller
 {
@@ -26,5 +27,12 @@ class HomeController extends Controller
     {
         $data = Activity::with(['company', 'actividad'])->get();
         return view('home', compact('data'));
+    }
+
+    public function statusupdate($activityid, Request $request){
+        $activity = Activity::findOrFail($activityid);
+        $status = $request->input('status');
+        $activity->update(['status' => $status]);
+        return redirect()->route('home');
     }
 }

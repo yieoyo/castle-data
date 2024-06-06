@@ -17,6 +17,7 @@ class Activity extends Model
         'company_id',
         'id_actividad',
         'prioridad',
+        'status',
         'date',
     ];
 

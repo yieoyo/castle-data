@@ -33,6 +33,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     // Define resourceful routes for users and roles
     Route::resources(['users' => UserController::class]);
     Route::get('home', [HomeController::class, 'index'])->name('home');
+    Route::post('updatestatus/{activityid}', [HomeController::class, 'statusupdate'])->name('updatestatus');
 
     // Route to show the upload form
     Route::get('/scrape', [ScrapController::class, 'index'])->name('scrape.index');
